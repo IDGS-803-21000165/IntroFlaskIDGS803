@@ -82,5 +82,10 @@ def formulario():
     return render_template("formulario1.html")
 
 
+@app.route("/formulario2")
+def formulario2():
+    return render_template("formulario2.html")
+
+
 if __name__ == '__main__':
     app.run(debug=True)
