@@ -14,8 +14,12 @@ def index():
 @app.route("/alumnos", methods=["GET", "POST"])
 def alumnos():
     alum_form = forms.UsersForm(request.form)
-
-    if request.method == 'POST':
+    nom = ''
+    apa = ''
+    ama = ''
+    edad = 0
+    correo = ''
+    if request.method == 'POST' and alum_form.validate():
         nom = alum_form.nombre.data
         apa = alum_form.aPaterno.data
         ama = alum_form.aMaterno.data
