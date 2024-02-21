@@ -1,10 +1,31 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash, Response, g, redirect
+from flask_wtf.csrf import CSRFProtect
 import forms
 
 app = Flask(__name__)
+app.secret_key = "esta es la clave secreta"
 
 
-@app.route("/")
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.before_request
+def before_request():
+    g.nombre = 'Alec'
+    if 'Simón' not in g.nombre and request.endpoint not in ['index']:
+        return redirect('index')
+    # print('before_request')
+
+
+@app.after_request
+def after_request(response):
+    print('after_request')
+    return response
+
+
+@app.route("/index")
 def index():
     escuela = "UTL!!!"
     alumnos = ["Simón", "Alec", "Ulises"]
@@ -13,6 +34,8 @@ def index():
 
 @app.route("/alumnos", methods=["GET", "POST"])
 def alumnos():
+    print('Dentro de alumnos')
+    print(f'Hola: {g.nombre}')
     alum_form = forms.UsersForm(request.form)
     nom = ''
     apa = ''
@@ -25,6 +48,8 @@ def alumnos():
         ama = alum_form.aMaterno.data
         edad = alum_form.edad.data
         correo = alum_form.correo.data
+        mensaje = f'Bienvenido {nom}'
+        flash(mensaje)
 
         print(
             f'Nombre: {nom}, aPaterno: {apa}, aMaterno: {ama}, Edad: {edad}, Correo: {correo}')
